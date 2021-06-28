@@ -1,0 +1,5 @@
+$(function() {
+    $(".left").scroll(function() {
+        
+    });
+});
