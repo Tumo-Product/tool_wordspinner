@@ -32,13 +32,26 @@ body {
     display: none;
 }
 
+.current {
+    top: 53.5px;
+}
+
+.top {
+    top: -70px;
+}
+
+.bottom {
+    bottom: -70px;
+}
+
 .left, .right, .leftOverlay, .rightOverlay {
     height: 195px;
     width: 310px;
     border-radius: 19px;
     top: 190px;
     position: absolute;
-    overflow: auto;
+    overflow: hidden;
+    scroll-behavior: smooth;
 }
 
 .left, .leftOverlay {
@@ -61,6 +74,7 @@ body {
 }
 
 .left div, .right div {
+    transition: 1s;
     margin-left: 56px;
     height: 88px;
     width: 199px;
@@ -68,16 +82,11 @@ body {
     background-color: #F3F3F3;
     box-shadow: 5px 5px 5px 0 rgba(222,222,230,0.5), -3px -3px 5px 0 #FEFEFE;
 
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-
-    margin-top: 40px;
-}
-
-.left div:last-of-type, .right div:last-of-type {
-    margin-bottom: 40px;
 }
 
 #status {
