@@ -6,16 +6,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="styles/animations.css">
     <link rel="stylesheet" href="styles/main.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <div class="left"></div>
-    <div class="leftOverlay"></div>
+    <div class="left closed"></div>
+    <div class="leftOverlay closed"></div>
 
-    <div class="right"></div>
-    <div class="rightOverlay"></div>
+    <div class="right closed"></div>
+    <div class="rightOverlay closed"></div>
+
+    <div class="question">
+        <p>For each question, choose the answer that best describes your transportation habits.</p>
+    </div>
+
+    <div id="play" onclick="onPlay()">
+        <div class="circle"></div>
+        <div class="icon">
+            <img src="graphics/play.svg">
+        </div>
+    </div>
 
     <div id="status">
         <div></div>

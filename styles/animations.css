@@ -1,0 +1,23 @@
+.current {
+    top: 53.5px;
+}
+
+.top {
+    top: -70px;
+}
+
+.bottom {
+    top: 180px;
+}
+
+.offscreenBottom, .offscreenTop {
+    transition: 0.1s !important;
+}
+
+.offscreenTop {
+    top: -90px;
+}
+
+.offscreenBottom {
+    top: 200px;
+}

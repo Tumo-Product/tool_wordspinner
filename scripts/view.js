@@ -1,34 +1,56 @@
 const view = {
-    addPair: (current, top, bottom) => {
-        $(".left").append(`<div class="top">${top.text}</div>`);
-        $(".left").append(`<div class="current">${current.text}</div>`);
-        $(".left").append(`<div class="bottom">${bottom.text}</div>`);
+    addPair: (current, top, bottom, parent, type) => {
+        let currentText = type == 0 ? current.text : current.value;
+        let topText = type == 0 ? top.text : top.value;
+        let bottomText = type == 0 ? bottom.text : bottom.value;
+
+        $(parent).append(`<div class="top">${topText}</div>`);
+        $(parent).append(`<div class="current">${currentText}</div>`);
+        $(parent).append(`<div class="bottom">${bottomText}</div>`);
     },
-    updatePair: async (current, top, bottom, dir) => {
+    updatePair: async (current, top, bottom, dir, parent, type) => {
+        let currentText = type == 0 ? current.text : current.value;
+        let topText = type == 0 ? top.text : top.value;
+        let bottomText = type == 0 ? bottom.text : bottom.value;
+
+        scrolling[type] = true;
+
+        $(parent).find(dir > 0 ? ".bottom" : ".top").addClass(dir > 0 ? "offscreenBottom" : "offscreenTop");
+
+        $(parent).find(".current").addClass(dir > 0 ? "bottom" : "top");
+        $(parent).find(".current").removeClass("current");
+
+        $(parent).find(dir > 0 ? ".top" : ".bottom").addClass("current");
+        $(parent).find(dir > 0 ? ".top" : ".bottom").removeClass(dir > 0 ? "top" : "bottom");
+        $(parent).find(".current").text(currentText);
+
         if (dir > 0) {
-            $(".bottom").remove();
-
-            $(".current").addClass("bottom");
-            $(".current").removeClass("current");
-            $(".bottom").text(bottom.text);
-
-            $(".top").addClass("current");
-            $(".top").removeClass("top");
-            $(".current").text(current.text);
-            
-            $(".current").before(`<div class="top">${top.text}</div>`);
+            $(parent).find(".current").before(`<div class="offscreenTop">${topText}</div>`);
         } else {
-            $(".top").remove();
+            $(parent).find(".current").after(`<div class="offscreenBottom">${bottomText}</div>`);
+        }
 
-            $(".current").addClass("top");
-            $(".current").removeClass("current");
-            $(".top").text(top.text);
+        await timeout(200);
+        $(parent).find(dir > 0 ? ".offscreenTop" : ".offscreenBottom").addClass(dir > 0 ? "top" : "bottom");
+        $(parent).find(dir > 0 ? ".offscreenTop" : ".offscreenBottom").removeClass(dir > 0 ? "offscreenTop" : "offscreenBottom");
 
-            $(".bottom").addClass("current");
-            $(".bottom").removeClass("bottom");
-            $(".current").text(current.text);
+        await timeout (600);
+        $(parent).find(dir > 0 ? ".bottom" : ".top").text(dir > 0 ? bottomText : topText);
+        $(parent).find(dir > 0 ? ".offscreenBottom" : ".offscreenTop").remove();
 
-            $(".current").after(`<div class="bottom">${bottom.text}</div>`);
+        scrolling[type] = false;
+    },
+    onPlay: async () => {
+        $("#status").addClass("show");
+        $(".question").css("opacity", 0);
+        $("#play img").attr("src", "graphics/checkmark.svg");
+        $("#play .icon").addClass("checkmark");
+
+        await timeout (1000);
+
+        let classes = [".left", ".right", ".leftOverlay", ".rightOverlay"];
+        for (let i = 0; i < classes.length; i++) {
+            $(classes[i]).removeClass("closed");
         }
     }
 }
