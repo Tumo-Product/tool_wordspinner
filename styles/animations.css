@@ -21,3 +21,39 @@
 .offscreenBottom {
     top: 200px;
 }
+
+.red {
+    animation: 0.6s red linear;
+}
+
+.green {
+    animation: 0.6s green linear;
+}
+
+@keyframes red {
+    0% {
+        fill: #EBD730;
+    }
+
+    50% {
+        fill: red;
+    }
+
+    100% {
+        fill: #EBD730;
+    }
+}
+
+@keyframes green {
+    0% {
+        fill: #EBD730;
+    }
+
+    50% {
+        fill: green;
+    }
+
+    100% {
+        fill: #EBD730;
+    }
+}

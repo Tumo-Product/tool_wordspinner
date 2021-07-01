@@ -1,4 +1,6 @@
 const view = {
+    yellow: "#EBD730", red: "red", green: "green",
+
     addPair: (current, top, bottom, parent, type) => {
         let currentText = type == 0 ? current.text : current.value;
         let topText = type == 0 ? top.text : top.value;
@@ -41,16 +43,28 @@ const view = {
         scrolling[type] = false;
     },
     onPlay: async () => {
+        $("#status span").last().text(data.length);
         $("#status").addClass("show");
         $(".question").css("opacity", 0);
-        $("#play img").attr("src", "graphics/checkmark.svg");
-        $("#play .icon").addClass("checkmark");
 
+        $("#play svg").css("opacity", 0);
+        $("#play svg").remove();
+        await timeout (100);
+        $(".icon").load("../graphics/checkmark.svg");
+        $(".icon").addClass("checkmark");
+
+        await timeout (1000);
+        $(".question").hide("opacity", 0);
+        
         await timeout (1000);
 
         let classes = [".left", ".right", ".leftOverlay", ".rightOverlay"];
         for (let i = 0; i < classes.length; i++) {
             $(classes[i]).removeClass("closed");
         }
+    },
+    changeColor: (color) => {
+        $("path").removeClass("green red");
+        $("path").addClass(color);
     }
 }

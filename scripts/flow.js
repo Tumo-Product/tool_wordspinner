@@ -3,8 +3,9 @@ const timeout = (ms) => {
 }
 
 let data;
-let currentWord = 0;
+let currentWord = [];
 let scrolling = [false, false];
+let shuffledWords = [];
 
 jQuery.event.special.wheel = {
     setup: function( _, ns, handle ) {
@@ -16,40 +17,59 @@ const onPageLoad = async () => {
     data = await parser.dataFetch();
     data = data.objects;
 
-    addWords(".left", 0);
-    addWords(".right", 1);
+    for (let i = 0; i < data.length; i++) shuffledWords.push(i);
+    shuffledWords = shuffle(shuffledWords);
 
-    $(".left").on('wheel', async function (e) {
-        if (!scrolling[0]) {
-            // e.preventDefault();
+    currentWord[0] = shuffledWords[0];
+    currentWord[1] = shuffledWords[1];
+    addWords(".left", currentWord[0], 0);
+    addWords(".right", currentWord[1], 1);
 
-            let dir = -Math.sign(e.originalEvent.wheelDelta);
-            currentWord += dir;
-            scrollTo(currentWord, dir, this, 0);
-        }
-    });
-
-    $(".right").on('wheel', async function (e) {
-        if (!scrolling[1]) {
-            // e.preventDefault();
-
-            let dir = -Math.sign(e.originalEvent.wheelDelta);
-            currentWord += dir;
-            scrollTo(currentWord, dir, this, 1);
-        }
-    });
+    $(".left" ).on('wheel', async function (e) { wheel(e, this, 0) });
+    $(".right").on('wheel', async function (e) { wheel(e, this, 1) });
 }
 
-const onPlay = () => {
-    view.onPlay();
+const wheel = (e, obj, i) => {
+    if (!scrolling[i]) {
+        let dir = -Math.sign(e.originalEvent.wheelDelta);
+        currentWord[i] += dir;
+        scrollTo(currentWord[i], dir, obj, i);
+    }
+}
+
+const shuffle = (array) => {
+    let i = array.length, j = 0, temp;
+
+    while (i--) {
+        j = Math.floor(Math.random() * (i + 1));
+
+        temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+
+    return array;
+}
+
+const onPlay = async () => {
+    await view.onPlay();
+    $("#play").attr("onclick", "check()");
+}
+
+const check = async () => {
+    if (getWord(currentWord[0]).value == getWord(currentWord[1]).value) {
+        view.changeColor("green");
+    } else {
+        view.changeColor("red");
+    }
 }
 
 const scrollTo = async (index, dir, parent, type) => {
     view.updatePair(getWord(index), getWord(index - 1), getWord(index + 1), dir, parent, type);
 }
 
-const addWords = async (parent, type) => {
-    view.addPair(getWord(currentWord), getWord(currentWord - 1), getWord(currentWord + 1), parent, type);
+const addWords = async (parent, index, type) => {
+    view.addPair(getWord(index), getWord(index - 1), getWord(index + 1), parent, type);
 }
 
 const getWord = (newIndex) => {
