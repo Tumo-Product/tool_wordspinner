@@ -11,14 +11,16 @@ const view = {
         $(parent).append(`<div class="current">${currentText}</div>`);
         $(parent).append(`<div class="bottom">${bottomText}</div>`);
     },
-    updatePair: async (current, top, bottom, dir, parent, type) => {
+    updatePair: async (current, top, bottom, dir, parent, type, reset, generate) => {
         let currentText = type == 0 ? current.text : current.value;
         let topText = type == 0 ? top.text : top.value;
         let bottomText = type == 0 ? bottom.text : bottom.value;
 
         scrolling[type] = true;
 
-        $(parent).find(dir > 0 ? ".bottom" : ".top").addClass(dir > 0 ? "offscreenBottom" : "offscreenTop");
+        if (reset === undefined || reset === false) {
+            $(parent).find(dir > 0 ? ".bottom" : ".top").addClass(dir > 0 ? "offscreenBottom" : "offscreenTop");
+        }
 
         $(parent).find(".current").addClass(dir > 0 ? "bottom" : "top");
         $(parent).find(".current").removeClass("current");
@@ -27,10 +29,12 @@ const view = {
         $(parent).find(dir > 0 ? ".top" : ".bottom").removeClass(dir > 0 ? "top" : "bottom");
         $(parent).find(".current").text(currentText);
 
-        if (dir > 0) {
-            $(parent).find(".current").before(`<div class="offscreenTop">${topText}</div>`);
-        } else {
-            $(parent).find(".current").after(`<div class="offscreenBottom">${bottomText}</div>`);
+        if (generate) {
+            if (dir > 0) {
+                $(parent).find(".current").before(`<div class="offscreenTop">${topText}</div>`);
+            } else {
+                $(parent).find(".current").after(`<div class="offscreenBottom">${bottomText}</div>`);
+            }
         }
 
         await timeout(200);
@@ -40,8 +44,21 @@ const view = {
         await timeout (600);
         $(parent).find(dir > 0 ? ".bottom" : ".top").text(dir > 0 ? bottomText : topText);
         $(parent).find(dir > 0 ? ".offscreenBottom" : ".offscreenTop").remove();
+        if (reset == true) $(".goLeft").remove();
 
         scrolling[type] = false;
+    },
+    secondLastScroll: async () => {
+        $(".top").addClass   ("current");
+        $(".top").removeClass("top");
+        $(".goLeft").remove(); $(".goRight").remove();
+    },
+    lastScroll: async () => {
+        $(".left div").addClass("current");
+        $(".left div").removeClass("top bottom")
+
+        $(".right div").addClass("current");
+        $(".right div").removeClass("top bottom");
     },
     onPlay: async () => {
         $("#status span").last().text(data.length);
@@ -56,8 +73,6 @@ const view = {
 
         await timeout (1000);
         $(".question").hide("opacity", 0);
-        
-        await timeout (1000);
 
         let classes = [".left", ".right", ".leftOverlay", ".rightOverlay"];
         for (let i = 0; i < classes.length; i++) {
@@ -66,19 +81,32 @@ const view = {
     },
     changeColor: async (color) => {
         $("path").addClass(color);
+        $("#play").removeClass("hoverable");
 
-        await timeout(1000);
+        await timeout(600);
+        $("#play").addClass("hoverable");
         $("path").removeClass(color);
     },
-
-    changeAnswersBlock : () =>{
+    updateStatus: () =>{
         $("#status span").first().text(++view.correct);
-        if (view.correct >= len)
-            console.log(view.correct);
     },
+    deletePair: () =>{
+        $(".left .current").addClass("goLeft");
+        $(".right .current").addClass("goRight");
+    },
+    shake: async () => {
+        $(".current").addClass("shake");
+        await timeout(820);
+        $(".current").removeClass("shake");
+    },
+    end: async () => {
+        await timeout(1000);
+        let classes = [".left", ".right", ".leftOverlay", ".rightOverlay"];
 
-    deletePair : () =>{
-        // $(".left .current").remove();
-        // $(".right .current").remove();
+        for (let i = 0; i < classes.length; i++) {
+            $(classes[i]).addClass("closed");
+        }
+
+        $("#play").addClass("goUnder");
     }
 }

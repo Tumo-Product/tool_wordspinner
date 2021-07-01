@@ -51,12 +51,8 @@ body {
     left: 8px !important;
 }
 
-.closed {
-    top: 352px !important;
-    height: 0 !important;
-}
-
 #play {
+    transition: 1s;
 	background: #F3F3F3;
 	width: 37px;
 	height: 37px;
@@ -65,8 +61,8 @@ body {
     cursor: pointer;
 
 	position: fixed;
-	bottom: 27px;
-	left: 420px;
+	bottom: 63px;
+	left: 431px;
 }
 
 .icon {
@@ -83,7 +79,7 @@ body {
     height: 100%;
 }
 
-#play:hover svg {
+.hoverable:hover svg {
 	opacity: 0.5;
 }
 
@@ -114,7 +110,7 @@ body {
 }
 
 .left, .leftOverlay {
-    left: 37px;
+    left: 97px;
     font-family: FedraBold;
     font-size: 40px;
 

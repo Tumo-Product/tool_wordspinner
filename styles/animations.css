@@ -35,8 +35,12 @@
         fill: #EBD730;
     }
 
-    50% {
-        fill: red;
+    20% {
+        fill: #E85156;
+    }
+
+    80% {
+        fill: #E85156;
     }
 
     100% {
@@ -49,11 +53,68 @@
         fill: #EBD730;
     }
 
-    50% {
-        fill: green;
+    20% {
+        fill: #6CB769;
+    }
+
+    80% {
+        fill: #6CB769;
     }
 
     100% {
         fill: #EBD730;
     }
+}
+
+.goLeft {
+    margin-left: -220px !important;
+}
+
+.goRight {
+    margin-left: 320px !important;
+}
+
+.closed {
+    top: 275px !important;
+    height: 0px !important;
+}
+
+.closed .current {
+    top: -44px !important
+}
+
+.closed .top {
+    top: -109.5px !important
+}
+
+.closed .bottom {
+    top: 142.5px !important;
+}
+
+.shake {
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+    perspective: 1000px;
+}
+
+@keyframes shake {
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%, 80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%, 60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
+
+.goUnder {
+    bottom: -40px !important;
 }

@@ -6,7 +6,8 @@ let data;
 let currentWord = [];
 let scrolling = [false, false];
 let shuffledWords = [];
-let len;
+let originalLength;
+let done = false;
 
 jQuery.event.special.wheel = {
     setup: function( _, ns, handle ) {
@@ -17,7 +18,7 @@ jQuery.event.special.wheel = {
 const onPageLoad = async () => {
     data = await parser.dataFetch();
     data = data.objects;
-    len = data.length;
+    originalLength = data.length;
 
     for (let i = 0; i < data.length; i++) shuffledWords.push(i);
     shuffledWords = shuffle(shuffledWords);
@@ -31,11 +32,29 @@ const onPageLoad = async () => {
 }
 
 const wheel = (e, obj, i) => {
-    if (!scrolling[i]) {
+    if (!scrolling[i] && !done) {
         let dir = -Math.sign(e.originalEvent.wheelDelta);
         currentWord[i] += dir;
-        scrollTo(currentWord[i], dir, obj, i);
+
+        let two = data.length < 3;
+        if (two) {
+            if($(obj).find(".top").length == 0 && dir == 1) {
+                return;
+            } else if ($(obj).find(".bottom").length == 0 && dir == -1) {
+                return;
+            }
+        }
+        
+        scrollTo(currentWord[i], dir, obj, i, false, data.length >= 3);
     }
+}
+
+const scrollTo = async (index, dir, parent, type, reset, generate) => {
+    view.updatePair(getWord(index), getWord(index - 1), getWord(index + 1), dir, parent, type, reset, generate);
+}
+
+const addWords = async (parent, index, type) => {
+    view.addPair(getWord(index), getWord(index - 1), getWord(index + 1), parent, type);
 }
 
 const shuffle = (array) => {
@@ -58,26 +77,40 @@ const onPlay = async () => {
 }
 
 const check = async () => {
+    scrolling = [true, true];
+
     if (getWord(currentWord[0]).value == getWord(currentWord[1]).value) {
         view.changeColor("green");
-        view.changeAnswersBlock();
-        for(let i = 0; i < data.length; i++){
-            if (i == currentWord[0])
-                data.splice(i, 1);
-        }
+        view.updateStatus();
+
+        data.splice(data.indexOf(getWord(currentWord[0])), 1);
         view.deletePair();
+        await timeout(1000);
+
+        for (let i = 0; i < currentWord.length; i++) {
+            currentWord[i]++;
+            let obj = i == 0 ? ".left" : ".right";
+
+            if (data.length == 2) {
+                view.secondLastScroll();
+            }
+            else if (data.length >= 3) {
+                scrollTo(currentWord[i], 1, obj, i, true);
+            }
+            else {
+                view.lastScroll();
+                done = true;
+
+                view.end();
+            }
+        }
     } 
     else {
         view.changeColor("red");
+        await view.shake();
     }
-}
-
-const scrollTo = async (index, dir, parent, type) => {
-    view.updatePair(getWord(index), getWord(index - 1), getWord(index + 1), dir, parent, type);
-}
-
-const addWords = async (parent, index, type) => {
-    view.addPair(getWord(index), getWord(index - 1), getWord(index + 1), parent, type);
+    
+    scrolling = [false, false];
 }
 
 const getWord = (newIndex) => {
