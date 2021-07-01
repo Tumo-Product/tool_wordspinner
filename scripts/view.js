@@ -1,5 +1,6 @@
 const view = {
     yellow: "#EBD730", red: "red", green: "green",
+    correct: 0,
 
     addPair: (current, top, bottom, parent, type) => {
         let currentText = type == 0 ? current.text : current.value;
@@ -63,8 +64,21 @@ const view = {
             $(classes[i]).removeClass("closed");
         }
     },
-    changeColor: (color) => {
-        $("path").removeClass("green red");
+    changeColor: async (color) => {
         $("path").addClass(color);
+
+        await timeout(1000);
+        $("path").removeClass(color);
+    },
+
+    changeAnswersBlock : () =>{
+        $("#status span").first().text(++view.correct);
+        if (view.correct >= len)
+            console.log(view.correct);
+    },
+
+    deletePair : () =>{
+        // $(".left .current").remove();
+        // $(".right .current").remove();
     }
 }

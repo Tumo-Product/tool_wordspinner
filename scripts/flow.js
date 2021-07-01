@@ -6,6 +6,7 @@ let data;
 let currentWord = [];
 let scrolling = [false, false];
 let shuffledWords = [];
+let len;
 
 jQuery.event.special.wheel = {
     setup: function( _, ns, handle ) {
@@ -16,6 +17,7 @@ jQuery.event.special.wheel = {
 const onPageLoad = async () => {
     data = await parser.dataFetch();
     data = data.objects;
+    len = data.length;
 
     for (let i = 0; i < data.length; i++) shuffledWords.push(i);
     shuffledWords = shuffle(shuffledWords);
@@ -24,7 +26,6 @@ const onPageLoad = async () => {
     currentWord[1] = shuffledWords[1];
     addWords(".left", currentWord[0], 0);
     addWords(".right", currentWord[1], 1);
-
     $(".left" ).on('wheel', async function (e) { wheel(e, this, 0) });
     $(".right").on('wheel', async function (e) { wheel(e, this, 1) });
 }
@@ -59,7 +60,14 @@ const onPlay = async () => {
 const check = async () => {
     if (getWord(currentWord[0]).value == getWord(currentWord[1]).value) {
         view.changeColor("green");
-    } else {
+        view.changeAnswersBlock();
+        for(let i = 0; i < data.length; i++){
+            if (i == currentWord[0])
+                data.splice(i, 1);
+        }
+        view.deletePair();
+    } 
+    else {
         view.changeColor("red");
     }
 }
