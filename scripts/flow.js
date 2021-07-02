@@ -6,8 +6,8 @@ let data;
 let currentWord = [];
 let scrolling = [false, false];
 let shuffledWords = [];
-let originalLength;
 let done = false;
+let originalData = [];
 
 jQuery.event.special.wheel = {
     setup: function( _, ns, handle ) {
@@ -18,7 +18,7 @@ jQuery.event.special.wheel = {
 const onPageLoad = async () => {
     data = await parser.dataFetch();
     data = data.objects;
-    originalLength = data.length;
+    originalData = JSON.parse(JSON.stringify(data));
 
     for (let i = 0; i < data.length; i++) shuffledWords.push(i);
     shuffledWords = shuffle(shuffledWords);
@@ -89,19 +89,21 @@ const check = async () => {
 
         for (let i = 0; i < currentWord.length; i++) {
             currentWord[i]++;
+            
             let obj = i == 0 ? ".left" : ".right";
 
             if (data.length == 2) {
                 view.secondLastScroll();
             }
             else if (data.length >= 3) {
-                scrollTo(currentWord[i], 1, obj, i, true);
+                scrollTo(currentWord[i], 1, obj, i, true, true);
             }
-            else {
+            else if (data.length == 1) {
                 view.lastScroll();
+            } else {
                 done = true;
-
                 view.end();
+                break;
             }
         }
     } 
@@ -110,7 +112,13 @@ const check = async () => {
         await view.shake();
     }
     
+    await timeout(800);
     scrolling = [false, false];
+
+    // Cooldown
+    $("#play").attr("onclick", "");
+    await timeout (1000);
+    $("#play").attr("onclick", "check()");
 }
 
 const getWord = (newIndex) => {

@@ -1,6 +1,6 @@
 const view = {
-    yellow: "#EBD730", red: "red", green: "green",
     correct: 0,
+    row: `<div class="row"></div>`,
 
     addPair: (current, top, bottom, parent, type) => {
         let currentText = type == 0 ? current.text : current.value;
@@ -51,7 +51,11 @@ const view = {
     secondLastScroll: async () => {
         $(".top").addClass   ("current");
         $(".top").removeClass("top");
-        $(".goLeft").remove(); $(".goRight").remove();
+        $(".goLeft" ).remove ();
+        $(".goRight").remove ();
+
+        $(".left").find (".current").text(getWord(currentWord[0].text));
+        $(".right").find(".current").text(getWord(currentWord[1].value));
     },
     lastScroll: async () => {
         $(".left div").addClass("current");
@@ -100,7 +104,7 @@ const view = {
         $(".current").removeClass("shake");
     },
     end: async () => {
-        await timeout(1000);
+        await timeout(200);
         let classes = [".left", ".right", ".leftOverlay", ".rightOverlay"];
 
         for (let i = 0; i < classes.length; i++) {
@@ -108,5 +112,37 @@ const view = {
         }
 
         $("#play").addClass("goUnder");
+        $("#status").removeClass("show");
+
+        await timeout(1000);
+        $(".outcome").show();
+        $(".outcome").addClass("showOutcome");
+
+        let rowCount = Math.ceil(originalData.length / 3);
+        let itemCount = 0;
+
+        for (let i = 0; i < rowCount; i++) {
+            $(".outcome").append(view.row);
+            
+            for (let j = 0; j < 3; j++) {
+                view.createItem($(".row").eq(i), originalData[itemCount].text, originalData[itemCount].value);
+                itemCount++;
+
+                if (itemCount == originalData.length) {
+                    return;
+                }
+            }
+
+            await timeout(200);
+        }
+    },
+    createItem: async (parent, text, value) => {
+        let item = `<div class="item">
+                        <p>${text}</p>
+                        <div class="bar"></div>
+                        <p>${value}</p>
+                    </div>`;
+
+        $(parent).append(item);
     }
 }

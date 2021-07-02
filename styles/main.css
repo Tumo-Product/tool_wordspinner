@@ -98,6 +98,20 @@ body {
     display: none;
 }
 
+.outcome {
+    transition: 1s;
+    height: 451px;
+    width: 705px;
+    border-radius: 19px;
+    box-shadow: inset -2px -2px 5px 0 #FFFFFF, inset 2px 3px 3px 1px rgba(222,222,230,0.72);
+    position: absolute;
+    left: 99px;
+    top: 48px;
+    padding: 27px 17px;
+    display: none;
+    overflow: scroll;
+}
+
 .left, .right, .leftOverlay, .rightOverlay {
     transition: 1s;
     height: 195px;
@@ -131,8 +145,8 @@ body {
 }
 
 .left div, .right div {
-    transition: 1s;
     margin-left: 56px;
+    transition: 1s;
     height: 88px;
     width: 199px;
     border-radius: 19px;
@@ -144,6 +158,63 @@ body {
     justify-content: center;
     align-items: center;
     cursor: pointer;
+}
+
+.row {
+    position: relative;
+    top: 0;
+    display: flex;
+    flex-direction: row;
+    margin-top: 14px;
+}
+
+.row:first-of-type {
+    margin: 0;
+}
+
+.bar {
+    height: 5px;
+    width: 187px;
+    border-radius: 19px;
+    box-shadow: inset -2px -2px 5px 0 #FFFFFF, inset 2px 3px 3px 1px rgba(222,222,230,0.72);
+    position: absolute;
+    top: 42.5px;
+}
+
+.item {
+    height: 88px;
+    width: 199px;
+    border-radius: 19px;
+    background-color: #F3F3F3;
+    box-shadow: 5px 5px 5px 0 rgba(222,222,230,0.5), -3px -3px 5px 0 #FEFEFE;
+    margin-right: 37px;
+    padding: 5px;
+}
+
+.item p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.item p:first-of-type {
+    font-family: FedraBold;
+    font-size: 30px;
+    color: #5C7CA6;
+    height: 42px;
+    
+}
+
+.item p:last-of-type {
+    font-family: FedraDemi;
+    font-size: 16px;
+    color: #9AB7DB;
+    height: 34px;
+    margin-top: 4px;
+}
+
+.item:last-of-type {
+    margin: 0;
 }
 
 #status {

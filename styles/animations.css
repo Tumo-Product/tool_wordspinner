@@ -118,3 +118,31 @@
 .goUnder {
     bottom: -40px !important;
 }
+
+.showOutcome {
+    animation: showOutcome 1s linear;
+}
+
+@keyframes showOutcome {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.row {
+    animation: rowPopup 0.8s ease-in-out;
+}
+
+@keyframes rowPopup {
+    from {
+        top: 600px;
+    }
+
+    to {
+        top: 0px;
+    }
+}
