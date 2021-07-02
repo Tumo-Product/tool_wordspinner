@@ -27,7 +27,9 @@ const view = {
 
         $(parent).find(dir > 0 ? ".top" : ".bottom").addClass("current");
         $(parent).find(dir > 0 ? ".top" : ".bottom").removeClass(dir > 0 ? "top" : "bottom");
-        $(parent).find(".current").text(currentText);
+        if (data.length >= 3) {
+            $(parent).find(".current").text(currentText);
+        }
 
         if (generate) {
             if (dir > 0) {
