@@ -80,7 +80,7 @@ const check = async () => {
     scrolling = [true, true];
 
     if (getWord(currentWord[0]).value == getWord(currentWord[1]).value) {
-        view.changeColor("green");
+        view.toggleFlash("green");
         view.updateStatus();
 
         data.splice(data.indexOf(getWord(currentWord[0])), 1);
@@ -108,7 +108,7 @@ const check = async () => {
         }
     } 
     else {
-        view.changeColor("red");
+        view.toggleFlash("red");
         await view.shake();
     }
     
@@ -117,7 +117,7 @@ const check = async () => {
 
     // Cooldown
     $("#play").attr("onclick", "");
-    await timeout (1000);
+    await timeout (800);
     $("#play").attr("onclick", "check()");
 }
 

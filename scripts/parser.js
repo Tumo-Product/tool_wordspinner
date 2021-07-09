@@ -11,10 +11,10 @@ const words = {
     objects: [
         {
             text: "Plastic",
-            value: "Once"
+            value: "Once or twice"
         },
         {
-            text: "Food",
+            text: "Test",
             value: "Twice"
         },
         {
@@ -27,7 +27,7 @@ const words = {
         },
         {
             text: "ca",
-            value: "Twice"
+            value: "Infinite"
         },
         {
             text: "ds",
