@@ -20,6 +20,8 @@
 
 body {
     background: #F3F3F3;
+    width: 900px;
+    height: 550px;
     overflow: hidden;
 }
 
@@ -62,7 +64,8 @@ body {
     cursor: pointer;
 
 	position: fixed;
-	bottom: 63px;
+    top: 0;
+    margin-top: 450px;
 	left: 431px;
 }
 
@@ -110,7 +113,7 @@ body {
     top: 48px;
     padding: 27px 17px;
     display: none;
-    overflow: scroll;
+    overflow: hidden;
 }
 
 .left, .right, .leftOverlay, .rightOverlay {
@@ -220,17 +223,17 @@ body {
 
 #status {
     transition: 1s;
-    left: 1000px;
+    margin-left: 1000px;
     width: 93px;
     height: 93px;
-    position: absolute;
+    position: fixed;
     top: 18px;
     border-radius: 100%;
     box-shadow: 1px 1px 2px 0 #FEFEFE, -2px 1px 2px 0 rgba(222,222,230,0.5);
 }
 
 .show {
-    left: 780px !important;
+    margin-left: 780px !important;
 }
 
 #status div {
