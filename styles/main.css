@@ -20,6 +20,7 @@
 
 body {
     background: #F3F3F3;
+    overflow: hidden;
 }
 
 * {
@@ -94,9 +95,9 @@ body {
     left: 3px;
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
     display: none;
-}
+} */
 
 .outcome {
     transition: 1s;

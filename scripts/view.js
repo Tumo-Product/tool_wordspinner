@@ -74,7 +74,7 @@ const view = {
         $("#play svg").css("opacity", 0);
         $("#play svg").remove();
         await timeout (100);
-        $(".icon").load("../graphics/checkmark.svg");
+        $(".icon").load(window.location.href + "graphics/checkmark.svg");
         $(".icon").addClass("checkmark");
 
         await timeout (1000);
