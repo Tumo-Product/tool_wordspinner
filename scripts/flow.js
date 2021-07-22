@@ -8,6 +8,7 @@ let scrolling = [false, false];
 let shuffledWords = [];
 let done = false;
 let originalData = [];
+let href = window.location.href;
 
 jQuery.event.special.wheel = {
     setup: function( _, ns, handle ) {
@@ -17,8 +18,11 @@ jQuery.event.special.wheel = {
 
 const onPageLoad = async () => {
     data = await parser.dataFetch();
-    data = data.objects;
+    data = data.data.data.elements;
+    href = href.substring(0, href.indexOf("?"));
+
     originalData = JSON.parse(JSON.stringify(data));
+    loader.toggle();
 
     for (let i = 0; i < data.length; i++) shuffledWords.push(i);
     shuffledWords = shuffle(shuffledWords);
@@ -27,6 +31,7 @@ const onPageLoad = async () => {
     currentWord[1] = shuffledWords[1];
     addWords(".left", currentWord[0], 0);
     addWords(".right", currentWord[1], 1);
+
     $(".left" ).on('wheel', async function (e) { wheel(e, this, 0) });
     $(".right").on('wheel', async function (e) { wheel(e, this, 1) });
 }

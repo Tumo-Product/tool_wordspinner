@@ -74,7 +74,7 @@ const view = {
         $("#play svg").css("opacity", 0);
         await timeout (500);
         $("#play svg").remove();
-        $(".icon").load(window.location.href + "graphics/checkmark.svg");
+        $(".icon").load(href + "graphics/checkmark.svg");
         $(".icon").addClass("checkmark");
 
         await timeout (1000);
@@ -90,14 +90,6 @@ const view = {
 		await timeout(500);
 		$(`#${color}`).css("opacity", 0);
 	},
-    // changeColor: async (color) => {
-    //     $("path").addClass(color);
-    //     $("#play").removeClass("hoverable");
-
-    //     await timeout(600);
-    //     $("#play").addClass("hoverable");
-    //     $("path").removeClass(color);
-    // },
     updateStatus: () =>{
         $("#status span").first().text(++view.correct);
     },
