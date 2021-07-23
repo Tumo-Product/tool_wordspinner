@@ -82,6 +82,8 @@ const onPlay = async () => {
 }
 
 const check = async () => {
+    view.flashCircle();
+    
     scrolling = [true, true];
 
     if (getWord(currentWord[0]).value == getWord(currentWord[1]).value) {
@@ -119,6 +121,7 @@ const check = async () => {
     
     await timeout(800);
     scrolling = [false, false];
+
 
     // Cooldown
     $("#play").attr("onclick", "");

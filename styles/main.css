@@ -164,6 +164,10 @@ body {
     cursor: pointer;
 }
 
+.left p, .right p {
+    white-space: nowrap;
+}
+
 .row {
     position: relative;
     top: 0;

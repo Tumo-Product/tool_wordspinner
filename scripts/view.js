@@ -7,9 +7,9 @@ const view = {
         let topText = type == 0 ? top.text : top.value;
         let bottomText = type == 0 ? bottom.text : bottom.value;
 
-        $(parent).append(`<div class="top">${topText}</div>`);
-        $(parent).append(`<div class="current">${currentText}</div>`);
-        $(parent).append(`<div class="bottom">${bottomText}</div>`);
+        $(parent).append(`<div class="top"><p>${topText}</p></div>`);
+        $(parent).append(`<div class="current"><p>${currentText}</p></div>`);
+        $(parent).append(`<div class="bottom"><p>${bottomText}</p></div>`);
     },
     updatePair: async (current, top, bottom, dir, parent, type, reset, generate) => {
         let currentText = type == 0 ? current.text : current.value;
@@ -28,23 +28,24 @@ const view = {
         $(parent).find(dir > 0 ? ".top" : ".bottom").addClass("current");
         $(parent).find(dir > 0 ? ".top" : ".bottom").removeClass(dir > 0 ? "top" : "bottom");
         if (data.length >= 3) {
-            $(parent).find(".current").text(currentText);
+            $(parent).find(".current p").text(currentText);
         }
 
         if (generate) {
             if (dir > 0) {
-                $(parent).find(".current").before(`<div class="offscreenTop">${topText}</div>`);
+                $(parent).find(".current").before(`<div class="offscreenTop"><p>${topText}</p></div>`);
             } else {
-                $(parent).find(".current").after(`<div class="offscreenBottom">${bottomText}</div>`);
+                $(parent).find(".current").after(`<div class="offscreenBottom"><p>${bottomText}</p></div>`);
             }
         }
 
+        view.fitText();
         await timeout(200);
         $(parent).find(dir > 0 ? ".offscreenTop" : ".offscreenBottom").addClass(dir > 0 ? "top" : "bottom");
         $(parent).find(dir > 0 ? ".offscreenTop" : ".offscreenBottom").removeClass(dir > 0 ? "offscreenTop" : "offscreenBottom");
 
         await timeout (600);
-        $(parent).find(dir > 0 ? ".bottom" : ".top").text(dir > 0 ? bottomText : topText);
+        $(parent).find(dir > 0 ? ".bottom p" : ".top p").text(dir > 0 ? bottomText : topText);
         $(parent).find(dir > 0 ? ".offscreenBottom" : ".offscreenTop").remove();
         if (reset == true) $(".goLeft").remove();
 
@@ -56,8 +57,9 @@ const view = {
         $(".goLeft" ).remove ();
         $(".goRight").remove ();
 
-        $(".left").find (".current").text(getWord(currentWord[0].text));
-        $(".right").find(".current").text(getWord(currentWord[1].value));
+        $(".left").find (".current p").text(getWord(currentWord[0].text));
+        $(".right").find(".current p").text(getWord(currentWord[1].value));
+        view.fitText();
     },
     lastScroll: async () => {
         $(".left div").addClass("current");
@@ -65,6 +67,7 @@ const view = {
 
         $(".right div").addClass("current");
         $(".right div").removeClass("top bottom");
+        view.fitText();
     },
     onPlay: async () => {
         $("#status span").last().text(data.length);
@@ -90,6 +93,11 @@ const view = {
 		await timeout(500);
 		$(`#${color}`).css("opacity", 0);
 	},
+    flashCircle: async() => {
+        $(".circle").css("opacity", 0);
+        await timeout(300);
+        $(".circle").css("opacity", 1);
+    },
     updateStatus: () =>{
         $("#status span").first().text(++view.correct);
     },
@@ -143,5 +151,15 @@ const view = {
                     </div>`;
 
         $(parent).append(item);
-    }
+    },
+    fitText: () => {
+		$(`.current`).each(function () {
+			let size;
+
+			while ($(this).find("p").width() > $(this).width() - 10) {
+				size = parseInt($(this).find("p").css("font-size"), 10);
+				$(this).find("p").css("font-size", size - 1);
+			}
+		});
+	},
 }
