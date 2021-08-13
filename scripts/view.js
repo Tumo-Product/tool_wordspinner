@@ -3,18 +3,27 @@ const view = {
     row: `<div class="row"></div>`,
 
     addPair: (current, top, bottom, parent, type) => {
-        let currentText = type == 0 ? current.text : current.value;
-        let topText = type == 0 ? top.text : top.value;
-        let bottomText = type == 0 ? bottom.text : bottom.value;
+        let currentText = type == 0 ? current.text  : current.value;
+        let bottomText  = type == 0 ? bottom.text   : bottom.value;
+        let topText     = type == 0 ? top.text      : top.value;
+        
+        if (keepValue && type == 1) {
+            if (dupValues.length < 3) {
+                $(parent).append(`<div class="current"><p>${currentText}</p></div>`);
+                $(parent).append(`<div class="bottom"><p>${bottomText}</p></div>`);
+            }
+        } else {
+            $(parent).append(`<div class="top"><p>${topText}</p></div>`);
+            $(parent).append(`<div class="current"><p>${currentText}</p></div>`);
+            $(parent).append(`<div class="bottom"><p>${bottomText}</p></div>`);
+        }
 
-        $(parent).append(`<div class="top"><p>${topText}</p></div>`);
-        $(parent).append(`<div class="current"><p>${currentText}</p></div>`);
-        $(parent).append(`<div class="bottom"><p>${bottomText}</p></div>`);
+        view.fitText(".current", 10);
     },
     updatePair: async (current, top, bottom, dir, parent, type, reset, generate) => {
-        let currentText = type == 0 ? current.text : current.value;
-        let topText = type == 0 ? top.text : top.value;
-        let bottomText = type == 0 ? bottom.text : bottom.value;
+        let currentText = type == 0 ? current.text  : current.value;
+        let bottomText  = type == 0 ? bottom.text   : bottom.value;
+        let topText     = type == 0 ? top.text      : top.value;
 
         scrolling[type] = true;
 
@@ -28,7 +37,8 @@ const view = {
         $(parent).find(dir > 0 ? ".top" : ".bottom").addClass("current");
         $(parent).find(dir > 0 ? ".top" : ".bottom").removeClass(dir > 0 ? "top" : "bottom");
         if (data.length >= 3) {
-            $(parent).find(".current p").text(currentText);
+            if (!keepValue && type == 1)
+                $(parent).find(".current p").text(currentText);
         }
 
         if (generate) {
@@ -39,35 +49,41 @@ const view = {
             }
         }
 
-        view.fitText();
+        view.fitText(".current", 10);
         await timeout(200);
         $(parent).find(dir > 0 ? ".offscreenTop" : ".offscreenBottom").addClass(dir > 0 ? "top" : "bottom");
         $(parent).find(dir > 0 ? ".offscreenTop" : ".offscreenBottom").removeClass(dir > 0 ? "offscreenTop" : "offscreenBottom");
 
         await timeout (600);
-        $(parent).find(dir > 0 ? ".bottom p" : ".top p").text(dir > 0 ? bottomText : topText);
+        if (!keepValue || (keepValue && type == 0))
+            $(parent).find(dir > 0 ? ".bottom p" : ".top p").text(dir > 0 ? bottomText : topText);
+        
         $(parent).find(dir > 0 ? ".offscreenBottom" : ".offscreenTop").remove();
-        if (reset == true) $(".goLeft").remove();
+        if (reset == true) $(".goLeft").remove(); $(".goRight").remove();
 
         scrolling[type] = false;
     },
-    secondLastScroll: async () => {
-        $(".top").addClass   ("current");
-        $(".top").removeClass("top");
-        $(".goLeft" ).remove ();
-        $(".goRight").remove ();
+    secondLastScroll: async (parent) => {
+        if (keepValue && parent == ".right") return;
+        
+        $(parent + " .top").addClass   ("current");
+        $(parent + " .top").removeClass("top");
+        $(parent + " .goLeft" ).remove ();
+        $(parent + " .goRight").remove ();
 
-        $(".left").find (".current p").text(getWord(currentWord[0].text));
-        $(".right").find(".current p").text(getWord(currentWord[1].value));
-        view.fitText();
+        // $(".left").find (".current p").text(getWord(currentWord[0], 0).text);
+        // $(".right").find(".current p").text(getWord(currentWord[1], 1).value);
+        view.fitText(".current", 10);
     },
     lastScroll: async () => {
         $(".left div").addClass("current");
-        $(".left div").removeClass("top bottom")
+        $(".left div").removeClass("top bottom");
 
-        $(".right div").addClass("current");
-        $(".right div").removeClass("top bottom");
-        view.fitText();
+        if (!keepValue) {
+            $(".right div").addClass("current");
+            $(".right div").removeClass("top bottom");
+        }
+        view.fitText(".current", 10);
     },
     onPlay: async () => {
         $("#status span").last().text(data.length);
@@ -103,7 +119,7 @@ const view = {
     },
     deletePair: () =>{
         $(".left .current").addClass("goLeft");
-        $(".right .current").addClass("goRight");
+        if (!keepValue) $(".right .current").addClass("goRight");
     },
     shake: async () => {
         $(".current").addClass("shake");
@@ -124,41 +140,56 @@ const view = {
         await timeout(1000);
         $(".outcome").show();
         $(".outcome").addClass("showOutcome");
+        $(".outcomeOverlay").addClass("showOutcome");
+        $(".outcomeOverlay").show();
 
         let rowCount = Math.ceil(originalData.length / 3);
         let itemCount = 0;
 
         for (let i = 0; i < rowCount; i++) {
             $(".outcome").append(view.row);
+            await timeout(20);
             
             for (let j = 0; j < 3; j++) {
                 view.createItem($(".row").eq(i), originalData[itemCount].text, originalData[itemCount].value);
                 itemCount++;
 
                 if (itemCount == originalData.length) {
+                    if (originalData.length > 12) $("#arrows").addClass("arrowsAnimation");
+                    view.fitText(".textHolder");
                     return;
                 }
             }
+
+            view.fitText(".textHolder");
 
             await timeout(200);
         }
     },
     createItem: async (parent, text, value) => {
         let item = `<div class="item">
-                        <p>${text}</p>
+                        <div class="textHolder">
+                            <p>${text}</p>
+                        </div>
                         <div class="bar"></div>
-                        <p>${value}</p>
+                        <div class="valueHolder">
+                            <p>${value}</p>
+                        </div>
                     </div>`;
 
         $(parent).append(item);
     },
-    fitText: () => {
-		$(`.current`).each(function () {
-			let size;
+    fitText: (parent, offset) => {
+        if (offset == undefined) offset = 0;
+        console.log(0);
 
-			while ($(this).find("p").width() > $(this).width() - 10) {
-				size = parseInt($(this).find("p").css("font-size"), 10);
-				$(this).find("p").css("font-size", size - 1);
+		$(parent).each(function () {
+			let size;
+            let paragraph = $(this).find("p");
+
+			while (paragraph.prop("scrollWidth") > $(this).width() - offset || paragraph.prop("scrollHeight") > $(this).height()) {
+				size = parseInt(paragraph.css("font-size"), 10);
+				paragraph.css("font-size", size - 1);
 			}
 		});
 	},

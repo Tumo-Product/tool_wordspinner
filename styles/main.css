@@ -107,13 +107,36 @@ body {
     height: 451px;
     width: 705px;
     border-radius: 19px;
-    box-shadow: inset -2px -2px 5px 0 #FFFFFF, inset 2px 3px 3px 1px rgba(222,222,230,0.72);
     position: absolute;
     left: 99px;
     top: 48px;
     padding: 17px;
     display: none;
-    overflow: hidden;
+    overflow: auto;
+}
+
+.outcomeOverlay {
+    height: 451px;
+    width: 705px;
+    border-radius: 19px;
+    box-shadow: inset -2px -2px 5px 0 #FFFFFF, inset 2px 3px 3px 1px rgba(222,222,230,0.72);
+    position: absolute;
+    left: 99px;
+    top: 48px;
+    opacity: 1;
+    display: none;
+    pointer-events: none;
+}
+
+#arrows {
+    transition: 0.8s;
+    position: absolute;
+    left: 438.5px;
+    bottom: 12px;
+    height: 26.9px;
+    width: 24.9px;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .left, .right, .leftOverlay, .rightOverlay {
@@ -189,7 +212,34 @@ body {
     top: 42.5px;
 }
 
+.textHolder {
+    position: absolute;
+    top: 5px;
+    left: 13.5px;
+    overflow: show;
+    width: 172px;
+    height: 40px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.valueHolder {
+    position: absolute;
+    top: 51px;
+    left: 13.5px;
+    overflow: show;
+    width: 172px;
+    height: 34px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .item {
+    position: relative;
     height: 88px;
     width: 199px;
     border-radius: 19px;
@@ -199,25 +249,16 @@ body {
     padding: 5px;
 }
 
-.item p {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.item p:first-of-type {
+.textHolder p {
     font-family: FedraBold;
     font-size: 30px;
     color: #5C7CA6;
-    height: 42px;
-    
 }
 
-.item p:last-of-type {
+.valueHolder p {
     font-family: FedraDemi;
     font-size: 16px;
     color: #9AB7DB;
-    height: 34px;
     margin-top: 4px;
 }
 
