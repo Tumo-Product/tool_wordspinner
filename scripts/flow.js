@@ -5,7 +5,7 @@ const timeout = (ms) => {
 let data;
 let dupValues = [];
 let keepValue = false;
-let currentWord = [];
+let currentWord = [0, 0];
 let scrolling = [false, false];
 let shuffledIndexes = [];
 let done = false;
@@ -39,11 +39,9 @@ const onPageLoad = async () => {
 
     originalData = JSON.parse(JSON.stringify(data));
 
-    for (let i = 0; i < data.length; i++) shuffledIndexes.push(i);
-    shuffledIndexes = shuffle(shuffledIndexes);
-
-    currentWord[0] = shuffledIndexes[0];
-    currentWord[1] = shuffledIndexes[1];
+    // TODO: shuffle all elements, not starting index shuffle.
+    
+    data = shuffle(data);
 
     addWords(".left", currentWord[0], 0);
     addWords(".right", currentWord[1], 1);
@@ -56,31 +54,19 @@ const onPageLoad = async () => {
 
 const wheel = (e, obj, i) => {
     if (!scrolling[i] && !done) {
-        let dir = -Math.sign(e.originalEvent.wheelDelta);
-        currentWord[i] += dir;
+        let dir = Math.sign(e.originalEvent.wheelDelta);
 
         let two = keepValue && i == 1 ? dupValues.length < 3 : data.length < 3;
         if (two) {
-            if($(obj).find(".top").length == 0 && dir == 1) {
+            if($(obj).find(".top").length == 0 && dir == -1) {
                 return;
-            } else if ($(obj).find(".bottom").length == 0 && dir == -1) {
+            } else if ($(obj).find(".bottom").length == 0 && dir == 1) {
                 return;
             }
         }
-        
-        scrollTo(currentWord[i], dir, obj, i, false, data.length >= 3);
-    }
-}
 
-const scrollTo = async (index, dir, parent, type, reset, generate) => {
-    if (keepValue && type == 1) {
-        if (dupValues.length < 3) {
-            view.updatePair(getWord(index, type), getWord(index - 1, type), getWord(index + 1, type), dir, parent, type, reset, false);
-        } else {
-            view.updatePair(getWord(index, type), getWord(index - 1, type), getWord(index + 1, type), dir, parent, type, reset, false);
-        }
-    } else {
-        view.updatePair(getWord(index, type), getWord(index - 1, type), getWord(index + 1, type), dir, parent, type, reset, generate);
+        currentWord[i] += dir;
+        scrollTo(currentWord[i], dir, obj, i, false, data.length >= 3);
     }
 }
 
@@ -115,8 +101,21 @@ const onPlay = async () => {
     $("#play").attr("onclick", "check()");
 }
 
+const scrollTo = async (index, dir, parent, type, reset, generate) => {
+    if (keepValue && type == 1) {
+        if (dupValues.length < 3) {
+            view.updatePair(getWord(index, type), getWord(index - 1, type), getWord(index + 1, type), dir, parent, type, reset, false);
+        } else {
+            view.updatePair(getWord(index, type), getWord(index - 1, type), getWord(index + 1, type), dir, parent, type, reset, false);
+        }
+    } else {
+        view.updatePair(getWord(index, type), getWord(index - 1, type), getWord(index + 1, type), dir, parent, type, reset, generate);
+    }
+}
+
 const check = async () => {
     view.flashCircle();
+    $("#play").attr("onclick", "");
     
     scrolling = [true, true];
 
@@ -133,9 +132,8 @@ const check = async () => {
         await timeout(1000);
 
         for (let i = 0; i < currentWord.length; i++) {
-            if (!keepValue || (keepValue && i == 0 && dupValues.length < 3)) {
-                currentWord[i]++;
-            }
+            if (!keepValue || (keepValue && i == 0))
+                currentWord[i]--;
             
             let obj = i == 0 ? ".left" : ".right";
 
@@ -145,7 +143,7 @@ const check = async () => {
                 view.secondLastScroll(obj);
             }
             else if (length >= 3) {
-                scrollTo(currentWord[i], 1, obj, i, true, true);
+                scrollTo(currentWord[i], -1, obj, i, true, true);
             }
             else if (length == 1) {
                 view.lastScroll();
@@ -161,12 +159,14 @@ const check = async () => {
         await view.shake();
     }
     
+    if (keepValue) {
+        scrolling = [true, false];
+    }
+
+    console.log(data, currentWord, getWord(currentWord[0], 0));
+
     await timeout(800);
     scrolling = [false, false];
-
-    // Cooldown
-    $("#play").attr("onclick", "");
-    await timeout (200);
     $("#play").attr("onclick", "check()");
 }
 

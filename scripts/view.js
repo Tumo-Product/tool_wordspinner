@@ -9,16 +9,16 @@ const view = {
         
         if (keepValue && type == 1) {
             if (dupValues.length < 3) {
-                $(parent).append(`<div class="current"><p>${currentText}</p></div>`);
-                $(parent).append(`<div class="bottom"><p>${bottomText}</p></div>`);
+                $(parent).append(`<div class="current word"><p>${currentText}</p></div>`);
+                $(parent).append(`<div class="bottom word"><p>${bottomText}</p></div>`);
             }
         } else {
-            $(parent).append(`<div class="top"><p>${topText}</p></div>`);
-            $(parent).append(`<div class="current"><p>${currentText}</p></div>`);
-            $(parent).append(`<div class="bottom"><p>${bottomText}</p></div>`);
+            $(parent).append(`<div class="top word"><p>${topText}</p></div>`);
+            $(parent).append(`<div class="current word"><p>${currentText}</p></div>`);
+            $(parent).append(`<div class="bottom word"><p>${bottomText}</p></div>`);
         }
 
-        view.fitText(".current", 10);
+        view.fitText(".current", 15);
     },
     updatePair: async (current, top, bottom, dir, parent, type, reset, generate) => {
         let currentText = type == 0 ? current.text  : current.value;
@@ -28,37 +28,36 @@ const view = {
         scrolling[type] = true;
 
         if (reset === undefined || reset === false) {
-            $(parent).find(dir > 0 ? ".bottom" : ".top").addClass(dir > 0 ? "offscreenBottom" : "offscreenTop");
+            $(parent).find(dir < 0 ? ".bottom" : ".top").addClass(dir < 0 ? "offscreenBottom" : "offscreenTop");
         }
 
-        $(parent).find(".current").addClass(dir > 0 ? "bottom" : "top");
+        $(parent).find(".current").addClass(dir < 0 ? "bottom" : "top");
         $(parent).find(".current").removeClass("current");
 
-        $(parent).find(dir > 0 ? ".top" : ".bottom").addClass("current");
-        $(parent).find(dir > 0 ? ".top" : ".bottom").removeClass(dir > 0 ? "top" : "bottom");
+        $(parent).find(dir < 0 ? ".top" : ".bottom").addClass("current");
+        $(parent).find(dir < 0 ? ".top" : ".bottom").removeClass(dir < 0 ? "top" : "bottom");
         if (data.length >= 3) {
-            if (!keepValue && type == 1)
-                $(parent).find(".current p").text(currentText);
+            $(parent).find(".current p").text(currentText);
         }
 
         if (generate) {
-            if (dir > 0) {
-                $(parent).find(".current").before(`<div class="offscreenTop"><p>${topText}</p></div>`);
+            if (dir < 0) {
+                $(parent).find(".current").before(`<div class="offscreenTop word"><p>${topText}</p></div>`);
             } else {
-                $(parent).find(".current").after(`<div class="offscreenBottom"><p>${bottomText}</p></div>`);
+                $(parent).find(".current").after(`<div class="offscreenBottom word"><p>${bottomText}</p></div>`);
             }
         }
 
-        view.fitText(".current", 10);
+        view.fitText(".word", 15);
         await timeout(200);
-        $(parent).find(dir > 0 ? ".offscreenTop" : ".offscreenBottom").addClass(dir > 0 ? "top" : "bottom");
-        $(parent).find(dir > 0 ? ".offscreenTop" : ".offscreenBottom").removeClass(dir > 0 ? "offscreenTop" : "offscreenBottom");
+        $(parent).find(dir < 0 ? ".offscreenTop" : ".offscreenBottom").addClass(dir < 0 ? "top" : "bottom");
+        $(parent).find(dir < 0 ? ".offscreenTop" : ".offscreenBottom").removeClass(dir < 0 ? "offscreenTop" : "offscreenBottom");
 
         await timeout (600);
         if (!keepValue || (keepValue && type == 0))
-            $(parent).find(dir > 0 ? ".bottom p" : ".top p").text(dir > 0 ? bottomText : topText);
+            $(parent).find(dir < 0 ? ".bottom p" : ".top p").text(dir < 0 ? bottomText : topText);
         
-        $(parent).find(dir > 0 ? ".offscreenBottom" : ".offscreenTop").remove();
+        $(parent).find(dir < 0 ? ".offscreenBottom" : ".offscreenTop").remove();
         if (reset == true) $(".goLeft").remove(); $(".goRight").remove();
 
         scrolling[type] = false;
@@ -70,10 +69,7 @@ const view = {
         $(parent + " .top").removeClass("top");
         $(parent + " .goLeft" ).remove ();
         $(parent + " .goRight").remove ();
-
-        // $(".left").find (".current p").text(getWord(currentWord[0], 0).text);
-        // $(".right").find(".current p").text(getWord(currentWord[1], 1).value);
-        view.fitText(".current", 10);
+        view.fitText(".word", 15);
     },
     lastScroll: async () => {
         $(".left div").addClass("current");
@@ -83,7 +79,7 @@ const view = {
             $(".right div").addClass("current");
             $(".right div").removeClass("top bottom");
         }
-        view.fitText(".current", 10);
+        view.fitText(".word", 15);
     },
     onPlay: async () => {
         $("#status span").last().text(data.length);
@@ -155,9 +151,9 @@ const view = {
                 itemCount++;
 
                 if (itemCount == originalData.length) {
-                    if (originalData.length > 12) $("#arrows").addClass("arrowsAnimation");
                     view.fitText(".textHolder");
-                    return;
+                    
+                    break;
                 }
             }
 
@@ -165,6 +161,9 @@ const view = {
 
             await timeout(200);
         }
+
+        if (originalData.length > 12) $("#arrows").addClass("arrowsAnimation");
+        $(".outcome").css("overflow", "auto");
     },
     createItem: async (parent, text, value) => {
         let item = `<div class="item">
@@ -181,7 +180,6 @@ const view = {
     },
     fitText: (parent, offset) => {
         if (offset == undefined) offset = 0;
-        console.log(0);
 
 		$(parent).each(function () {
 			let size;

@@ -112,7 +112,7 @@ body {
     top: 48px;
     padding: 17px;
     display: none;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .outcomeOverlay {
@@ -184,7 +184,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
 }
 
 .left p, .right p {

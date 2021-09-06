@@ -11,15 +11,15 @@
 }
 
 .offscreenBottom, .offscreenTop {
-    transition: 0.1s !important;
+    transition: 0.5s !important;
 }
 
 .offscreenTop {
-    top: -90px;
+    top: -120px;
 }
 
 .offscreenBottom {
-    top: 200px;
+    top: 220px;
 }
 
 .red {
