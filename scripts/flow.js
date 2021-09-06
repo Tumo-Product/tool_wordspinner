@@ -39,9 +39,8 @@ const onPageLoad = async () => {
 
     originalData = JSON.parse(JSON.stringify(data));
 
-    // TODO: shuffle all elements, not starting index shuffle.
-    
     data = shuffle(data);
+    currentWord[1] = Math.floor(Math.random() * ((data.length - 1) - 0 + 1));
 
     addWords(".left", currentWord[0], 0);
     addWords(".right", currentWord[1], 1);
@@ -163,9 +162,7 @@ const check = async () => {
         scrolling = [true, false];
     }
 
-    console.log(data, currentWord, getWord(currentWord[0], 0));
-
-    await timeout(800);
+    await timeout(900);
     scrolling = [false, false];
     $("#play").attr("onclick", "check()");
 }
