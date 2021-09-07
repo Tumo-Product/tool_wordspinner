@@ -19,7 +19,7 @@ const view = {
         }
 
         await timeout(1000);
-        view.fitText(".current", 15);
+        view.fitText(".word", 20);
     },
     updatePair: async (current, top, bottom, dir, parent, type, reset, generate) => {
         let currentText = type == 0 ? current.text  : current.value;
@@ -47,7 +47,8 @@ const view = {
             }
         }
 
-        view.fitText(".word", 15);
+        view.fitText(".word", 20);
+        
         await timeout(200);
         $(parent).find(dir < 0 ? ".offscreenTop" : ".offscreenBottom").addClass(dir < 0 ? "top" : "bottom");
         $(parent).find(dir < 0 ? ".offscreenTop" : ".offscreenBottom").removeClass(dir < 0 ? "offscreenTop" : "offscreenBottom");
@@ -55,6 +56,8 @@ const view = {
         await timeout (600);
         if (!keepValue || (keepValue && type == 0))
             $(parent).find(dir < 0 ? ".bottom p" : ".top p").text(dir < 0 ? bottomText : topText);
+
+        view.fitText(".word", 20);
         
         $(parent).find(dir < 0 ? ".offscreenBottom" : ".offscreenTop").remove();
         if (reset == true) $(".goLeft").remove(); $(".goRight").remove();
@@ -66,7 +69,7 @@ const view = {
         $(parent + " .top").removeClass("top");
         $(parent + " .goLeft" ).remove ();
         $(parent + " .goRight").remove ();
-        view.fitText(".word", 15);
+        view.fitText(".word", 20);
     },
     lastScroll: async () => {
         $(".left div").addClass("current");
@@ -76,7 +79,7 @@ const view = {
             $(".right div").addClass("current");
             $(".right div").removeClass("top bottom");
         }
-        view.fitText(".word", 15);
+        view.fitText(".word", 20);
     },
     onPlay: async () => {
         $("#status span").last().text(data.length);
@@ -182,9 +185,9 @@ const view = {
 			let size;
             let paragraph = $(this).find("p");
 
-			while (paragraph.prop("scrollWidth") > $(this).width() - offset || paragraph.prop("scrollHeight") > $(this).height()) {
+			while (paragraph.prop("scrollWidth") > $(this).width() - offset || paragraph.prop("scrollHeight") > $(this).height() - 22) {
 				size = parseInt(paragraph.css("font-size"), 10);
-				paragraph.css("font-size", size - 1);
+				paragraph.css("font-size", size - 2);
 			}
 		});
 	},

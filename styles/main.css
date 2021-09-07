@@ -83,6 +83,12 @@ body {
     height: 100%;
 }
 
+.word p {
+    white-space: initial;
+    text-align: center;
+    max-width: 170px;
+}
+
 .hoverable:hover svg {
 	opacity: 0.5;
 }
@@ -184,10 +190,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.left p, .right p {
-    white-space: nowrap;
 }
 
 .row {

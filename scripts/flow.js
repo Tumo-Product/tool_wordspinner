@@ -52,7 +52,6 @@ const onPageLoad = async () => {
 }
 
 const wheel = async (e, obj, i) => {
-    console.log(scrolling);
     if (!scrolling[i] && !done) {
         let dir = Math.sign(e.originalEvent.wheelDelta);
 
