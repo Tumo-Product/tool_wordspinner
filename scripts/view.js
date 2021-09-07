@@ -2,7 +2,7 @@ const view = {
     correct: 0,
     row: `<div class="row"></div>`,
 
-    addPair: (current, top, bottom, parent, type) => {
+    addPair: async (current, top, bottom, parent, type) => {
         let currentText = type == 0 ? current.text  : current.value;
         let bottomText  = type == 0 ? bottom.text   : bottom.value;
         let topText     = type == 0 ? top.text      : top.value;
@@ -18,14 +18,13 @@ const view = {
             $(parent).append(`<div class="bottom word"><p>${bottomText}</p></div>`);
         }
 
+        await timeout(1000);
         view.fitText(".current", 15);
     },
     updatePair: async (current, top, bottom, dir, parent, type, reset, generate) => {
         let currentText = type == 0 ? current.text  : current.value;
         let bottomText  = type == 0 ? bottom.text   : bottom.value;
         let topText     = type == 0 ? top.text      : top.value;
-
-        scrolling[type] = true;
 
         if (reset === undefined || reset === false) {
             $(parent).find(dir < 0 ? ".bottom" : ".top").addClass(dir < 0 ? "offscreenBottom" : "offscreenTop");
@@ -59,8 +58,6 @@ const view = {
         
         $(parent).find(dir < 0 ? ".offscreenBottom" : ".offscreenTop").remove();
         if (reset == true) $(".goLeft").remove(); $(".goRight").remove();
-
-        scrolling[type] = false;
     },
     secondLastScroll: async (parent) => {
         if (keepValue && parent == ".right") return;
