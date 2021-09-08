@@ -20,6 +20,7 @@ jQuery.event.special.wheel = {
 
 const onPageLoad = async () => {
     data        = await parser.dataFetch();
+    let intro   = data.data.data.intro;
     if (data.data.data.keepValue === undefined) keepValue = false;
     else keepValue   = data.data.data.keepValue;
     data        = data.data.data.elements;
@@ -36,6 +37,8 @@ const onPageLoad = async () => {
     }
 
     for (let i = 0; i < dupValues.length; i++) dupValues[i] = {value: dupValues[i]};
+
+    $(".question p").html(intro);
 
     originalData = JSON.parse(JSON.stringify(data));
 
