@@ -60,6 +60,8 @@ const view = {
         view.fitText(".word", 20);
         
         $(parent).find(dir < 0 ? ".offscreenBottom" : ".offscreenTop").remove();
+
+        $(".word p").css("font-size", "+=0.01");
         if (reset == true) $(".goLeft").remove(); $(".goRight").remove();
     },
     secondLastScroll: async (parent) => {

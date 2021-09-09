@@ -4,6 +4,7 @@ const timeout = (ms) => {
 
 let data;
 let dupValues = [];
+let values = [];
 let keepValue = false;
 let currentWord = [0, 0];
 let scrolling = [false, false];
@@ -37,13 +38,17 @@ const onPageLoad = async () => {
     }
 
     for (let i = 0; i < dupValues.length; i++) dupValues[i] = {value: dupValues[i]};
-
     $(".question p").html(intro);
 
-    originalData = JSON.parse(JSON.stringify(data));
+    for (let i =  0; i < data.length; i++) {
+        values.push({value: data[i].value});
+    }
 
+    originalData = JSON.parse(JSON.stringify(data));
+    values = shuffle(values);
     data = shuffle(data);
-    currentWord[1] = Math.floor(Math.random() * ((data.length - 1) - 0 + 1));
+
+    // currentWord[1] = Math.floor(Math.random() * ((data.length - 1) - 0 + 1));
 
     await addWords(".left", currentWord[0], 0);
     await addWords(".right", currentWord[1], 1);
@@ -87,17 +92,19 @@ const addWords = async (parent, index, type) => {
 }
 
 const shuffle = (array) => {
-    let i = array.length, j = 0, temp;
+	let currentIndex = array.length, tempVal, randomIndex;
 
-    while (i--) {
-        j = Math.floor(Math.random() * (i + 1));
+	while (0 !== currentIndex)
+	{
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex -= 1;
 
-        temp     = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
+		tempVal = array[currentIndex];
+		array[currentIndex] = array[randomIndex];
+		array[randomIndex] = tempVal;
+	}
 
-    return array;
+	return array;
 }
 
 const onPlay = async () => {
@@ -123,15 +130,12 @@ const check = async () => {
     
     scrolling = [true, true];
 
-    let condition;
-    if (keepValue)  condition = getWord(currentWord[0], 0).value == getWord(currentWord[1], 1).value;
-    else            condition = getWord(currentWord[0], 0).value == getWord(currentWord[1], 0).value;
-
-    if (condition) {
+    if (getWord(currentWord[0], 0).value == getWord(currentWord[1], 1).value) {
         view.toggleFlash("green");
         view.updateStatus();
 
         data.splice(data.indexOf(getWord(currentWord[0])), 1);
+        values.splice(values.indexOf(getWord(currentWord[1], 1)), 1);
         view.deletePair();
         await timeout(1000);
 
@@ -171,6 +175,7 @@ const check = async () => {
 
 const getWord = (newIndex, type) => {
     let length  = (type == 1 && keepValue) ? dupValues.length : data.length;
+    if (type == 1 && !keepValue) length = values.length;
     newIndex    %= length;
     
     if (newIndex < 0) {
@@ -180,6 +185,8 @@ const getWord = (newIndex, type) => {
         newIndex = 0;
     }
 
+    if (type == 1 && !keepValue)
+        return values[newIndex];
     return (type == 1 && keepValue) ? dupValues[newIndex] : data[newIndex];
 }
 
