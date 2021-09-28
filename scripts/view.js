@@ -153,13 +153,12 @@ const view = {
                 itemCount++;
 
                 if (itemCount == originalData.length) {
-                    view.fitText(".textHolder");
-                    
+                    view.fitText(".textHolder", 0, 0);
                     break;
                 }
             }
 
-            view.fitText(".textHolder");
+            view.fitText(".textHolder", 0, 0);
 
             await timeout(200);
         }
@@ -180,14 +179,18 @@ const view = {
 
         $(parent).append(item);
     },
-    fitText: (parent, offset) => {
+    fitText: (parent, offset, yOffset) => {
         if (offset == undefined) offset = 0;
+        if (yOffset === undefined) {
+            yOffset = 22;
+        }
+        console.log(yOffset);
 
 		$(parent).each(function () {
 			let size;
             let paragraph = $(this).find("p");
 
-			while (paragraph.prop("scrollWidth") > $(this).width() - offset || paragraph.prop("scrollHeight") > $(this).height() - 22) {
+			while (paragraph.prop("scrollWidth") > $(this).width() - offset || paragraph.prop("scrollHeight") > $(this).height() - yOffset) {
 				size = parseInt(paragraph.css("font-size"), 10);
 				paragraph.css("font-size", size - 2);
 			}
