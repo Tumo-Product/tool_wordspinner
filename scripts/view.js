@@ -154,11 +154,13 @@ const view = {
 
                 if (itemCount == originalData.length) {
                     view.fitText(".textHolder", 0, 0);
+                    view.fitText(".valueHolder", 0, 0);
                     break;
                 }
             }
 
             view.fitText(".textHolder", 0, 0);
+            view.fitText(".valueHolder", 0, 0);
 
             await timeout(200);
         }
